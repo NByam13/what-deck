@@ -45,4 +45,28 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Get all collections owned by the user.
+     */
+    public function collections()
+    {
+        return $this->hasMany(Collection::class);
+    }
+
+    /**
+     * Get all decks owned by the user.
+     */
+    public function decks()
+    {
+        return $this->hasMany(Deck::class);
+    }
+
+    /**
+     * Get all card instances owned by the user through collections.
+     */
+    public function cardInstances()
+    {
+        return $this->hasManyThrough(CardInstance::class, Collection::class);
+    }
 }

@@ -10,12 +10,29 @@ use App\Http\Resources\DeckResource;
 use App\Http\Resources\CardInstanceResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use OpenApi\Attributes as OA;
 
+#[OA\Tag(name: 'Decks', description: 'Magic: The Gathering deck management')]
 class DeckController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    #[OA\Get(
+        path: '/api/decks',
+        description: 'Get a paginated list of decks with optional filtering',
+        summary: 'List all decks',
+        tags: ['Decks'],
+        parameters: [
+            new OA\Parameter(name: 'format', description: 'Filter by deck format', in: 'query', required: false,
+                schema: new OA\Schema(type: 'string', enum: ['Standard', 'Modern', 'Legacy', 'Vintage', 'Commander', 'Pioneer', 'Historic', 'Pauper', 'Limited'], example: 'Modern')),
+            new OA\Parameter(name: 'page', description: 'Page number', in: 'query', required: false, schema: new OA\Schema(type: 'integer', minimum: 1, example: 1))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Successful response',
+                content: new OA\JsonContent(allOf: [
+                    new OA\Schema(ref: '#/components/schemas/PaginatedResponse'),
+                    new OA\Schema(properties: [new OA\Property(property: 'data', type: 'array', items: new OA\Items(ref: '#/components/schemas/Deck'))])
+                ]))
+        ]
+    )]
     public function index(Request $request): JsonResponse
     {
         $query = Deck::with('user')->withCount('cardInstances');
@@ -44,9 +61,25 @@ class DeckController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    #[OA\Post(
+        path: '/api/decks',
+        summary: 'Create a new deck',
+        description: 'Create a new Magic: The Gathering deck',
+        tags: ['Decks'],
+        requestBody: new OA\RequestBody(required: true, content: new OA\JsonContent(
+            required: ['user_id', 'name'],
+            properties: [
+                new OA\Property(property: 'user_id', type: 'integer', example: 1),
+                new OA\Property(property: 'name', type: 'string', example: 'Lightning Burn Deck'),
+                new OA\Property(property: 'description', type: 'string', nullable: true, example: 'Fast aggressive red deck'),
+                new OA\Property(property: 'format', type: 'string', nullable: true, enum: ['Standard', 'Modern', 'Legacy', 'Vintage', 'Commander', 'Pioneer', 'Historic', 'Pauper', 'Limited'], example: 'Modern'),
+            ]
+        )),
+        responses: [
+            new OA\Response(response: 201, description: 'Deck created', content: new OA\JsonContent(ref: '#/components/schemas/Deck')),
+            new OA\Response(response: 422, description: 'Validation error', content: new OA\JsonContent(ref: '#/components/schemas/ValidationError'))
+        ]
+    )]
     public function store(StoreDeckRequest $request): JsonResponse
     {
         $deck = Deck::create($request->validated());
@@ -57,19 +90,43 @@ class DeckController extends Controller
         );
     }
 
-    /**
-     * Display the specified resource.
-     */
+    #[OA\Get(
+        path: '/api/decks/{id}',
+        summary: 'Get a specific deck',
+        description: 'Retrieve a specific deck with its card instances',
+        tags: ['Decks'],
+        parameters: [new OA\Parameter(name: 'id', description: 'Deck ID', in: 'path', required: true, schema: new OA\Schema(type: 'integer', example: 1))],
+        responses: [
+            new OA\Response(response: 200, description: 'Successful response', content: new OA\JsonContent(ref: '#/components/schemas/Deck')),
+            new OA\Response(response: 404, description: 'Deck not found', content: new OA\JsonContent(ref: '#/components/schemas/ErrorResponse'))
+        ]
+    )]
     public function show(Deck $deck): JsonResponse
     {
         $deck->load(['user', 'cardInstances.card']);
-        
+
         return response()->json(new DeckResource($deck));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+    #[OA\Put(
+        path: '/api/decks/{id}',
+        summary: 'Update a deck',
+        description: 'Update an existing deck',
+        tags: ['Decks'],
+        parameters: [new OA\Parameter(name: 'id', description: 'Deck ID', in: 'path', required: true, schema: new OA\Schema(type: 'integer', example: 1))],
+        requestBody: new OA\RequestBody(required: true, content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'name', type: 'string', example: 'Updated Deck Name'),
+                new OA\Property(property: 'description', type: 'string', nullable: true, example: 'Updated description'),
+                new OA\Property(property: 'format', type: 'string', nullable: true, enum: ['Standard', 'Modern', 'Legacy', 'Vintage', 'Commander', 'Pioneer', 'Historic', 'Pauper', 'Limited'], example: 'Standard'),
+            ]
+        )),
+        responses: [
+            new OA\Response(response: 200, description: 'Deck updated', content: new OA\JsonContent(ref: '#/components/schemas/Deck')),
+            new OA\Response(response: 404, description: 'Deck not found', content: new OA\JsonContent(ref: '#/components/schemas/ErrorResponse')),
+            new OA\Response(response: 422, description: 'Validation error', content: new OA\JsonContent(ref: '#/components/schemas/ValidationError'))
+        ]
+    )]
     public function update(UpdateDeckRequest $request, Deck $deck): JsonResponse
     {
         $deck->update($request->validated());
@@ -77,14 +134,22 @@ class DeckController extends Controller
         return response()->json(new DeckResource($deck->load('user')));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    #[OA\Delete(
+        path: '/api/decks/{id}',
+        summary: 'Delete a deck',
+        description: 'Delete a deck and remove all card instances from it',
+        tags: ['Decks'],
+        parameters: [new OA\Parameter(name: 'id', description: 'Deck ID', in: 'path', required: true, schema: new OA\Schema(type: 'integer', example: 1))],
+        responses: [
+            new OA\Response(response: 200, description: 'Deck deleted', content: new OA\JsonContent(ref: '#/components/schemas/SuccessResponse')),
+            new OA\Response(response: 404, description: 'Deck not found', content: new OA\JsonContent(ref: '#/components/schemas/ErrorResponse'))
+        ]
+    )]
     public function destroy(Deck $deck): JsonResponse
     {
         // Remove all card instances from the deck (set deck_id to null)
         $deck->cardInstances()->update(['deck_id' => null]);
-        
+
         $deck->delete();
 
         return response()->json([
@@ -92,9 +157,24 @@ class DeckController extends Controller
         ]);
     }
 
-    /**
-     * Get all card instances in a deck.
-     */
+    #[OA\Get(
+        path: '/api/decks/{id}/card-instances',
+        summary: 'Get deck card instances',
+        description: 'Get all card instances in a specific deck',
+        tags: ['Decks'],
+        parameters: [
+            new OA\Parameter(name: 'id', description: 'Deck ID', in: 'path', required: true, schema: new OA\Schema(type: 'integer', example: 1)),
+            new OA\Parameter(name: 'page', description: 'Page number', in: 'query', required: false, schema: new OA\Schema(type: 'integer', minimum: 1, example: 1))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Successful response',
+                content: new OA\JsonContent(allOf: [
+                    new OA\Schema(ref: '#/components/schemas/PaginatedResponse'),
+                    new OA\Schema(properties: [new OA\Property(property: 'data', type: 'array', items: new OA\Items(ref: '#/components/schemas/CardInstance'))])
+                ])),
+            new OA\Response(response: 404, description: 'Deck not found', content: new OA\JsonContent(ref: '#/components/schemas/ErrorResponse'))
+        ]
+    )]
     public function cardInstances(Deck $deck): JsonResponse
     {
         $cardInstances = $deck->cardInstances()
@@ -118,9 +198,22 @@ class DeckController extends Controller
         ]);
     }
 
-    /**
-     * Add a card instance to a deck.
-     */
+    #[OA\Post(
+        path: '/api/decks/{deckId}/add-card-instance/{cardInstanceId}',
+        summary: 'Add card instance to deck',
+        description: 'Add a specific card instance to a deck',
+        tags: ['Decks'],
+        parameters: [
+            new OA\Parameter(name: 'deckId', description: 'Deck ID', in: 'path', required: true, schema: new OA\Schema(type: 'integer', example: 1)),
+            new OA\Parameter(name: 'cardInstanceId', description: 'Card Instance ID', in: 'path', required: true, schema: new OA\Schema(type: 'integer', example: 1))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Card instance added to deck', content: new OA\JsonContent(ref: '#/components/schemas/CardInstance')),
+            new OA\Response(response: 400, description: 'Card instance already assigned to a deck', content: new OA\JsonContent(ref: '#/components/schemas/ErrorResponse')),
+            new OA\Response(response: 403, description: 'Deck and card instance must belong to same user', content: new OA\JsonContent(ref: '#/components/schemas/ErrorResponse')),
+            new OA\Response(response: 404, description: 'Deck or card instance not found', content: new OA\JsonContent(ref: '#/components/schemas/ErrorResponse'))
+        ]
+    )]
     public function addCardInstance(Deck $deck, CardInstance $cardInstance): JsonResponse
     {
         // Verify the deck and card instance belong to the same user
@@ -149,9 +242,21 @@ class DeckController extends Controller
         return response()->json(new CardInstanceResource($cardInstance));
     }
 
-    /**
-     * Remove a card instance from a deck.
-     */
+    #[OA\Delete(
+        path: '/api/decks/{deckId}/remove-card-instance/{cardInstanceId}',
+        summary: 'Remove card instance from deck',
+        description: 'Remove a specific card instance from a deck',
+        tags: ['Decks'],
+        parameters: [
+            new OA\Parameter(name: 'deckId', description: 'Deck ID', in: 'path', required: true, schema: new OA\Schema(type: 'integer', example: 1)),
+            new OA\Parameter(name: 'cardInstanceId', description: 'Card Instance ID', in: 'path', required: true, schema: new OA\Schema(type: 'integer', example: 1))
+        ],
+        responses: [
+            new OA\Response(response: 200, description: 'Card instance removed from deck', content: new OA\JsonContent(ref: '#/components/schemas/CardInstance')),
+            new OA\Response(response: 400, description: 'Card instance does not belong to this deck', content: new OA\JsonContent(ref: '#/components/schemas/ErrorResponse')),
+            new OA\Response(response: 404, description: 'Deck or card instance not found', content: new OA\JsonContent(ref: '#/components/schemas/ErrorResponse'))
+        ]
+    )]
     public function removeCardInstance(Deck $deck, CardInstance $cardInstance): JsonResponse
     {
         // Verify the card instance belongs to this deck

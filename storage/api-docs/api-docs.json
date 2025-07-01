@@ -1,0 +1,2235 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "What Deck API",
+        "description": "Magic: The Gathering card collection management API",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "/api",
+            "description": "API Server"
+        }
+    ],
+    "paths": {
+        "/api/cards": {
+            "get": {
+                "tags": [
+                    "Cards"
+                ],
+                "summary": "List all cards",
+                "description": "Get a paginated list of Magic: The Gathering cards with optional filtering",
+                "operationId": "0cf776c75245f5f70e78d1981e3398c2",
+                "parameters": [
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "description": "Filter cards by type",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "Instant"
+                        }
+                    },
+                    {
+                        "name": "subtype",
+                        "in": "query",
+                        "description": "Filter cards by subtype",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "Spell"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search cards by title",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "Lightning"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number for pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/PaginatedResponse"
+                                        },
+                                        {
+                                            "properties": {
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Card"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Cards"
+                ],
+                "summary": "Create a new card",
+                "description": "Create a new Magic: The Gathering card",
+                "operationId": "6a1db83adb51fba2ac318a78bc2a4fde",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "title",
+                                    "type"
+                                ],
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Lightning Bolt"
+                                    },
+                                    "image_url": {
+                                        "type": "string",
+                                        "format": "url",
+                                        "example": "https://example.com/cards/lightning-bolt.jpg",
+                                        "nullable": true
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Lightning Bolt deals 3 damage to any target.",
+                                        "nullable": true
+                                    },
+                                    "cost": {
+                                        "type": "string",
+                                        "example": "{R}",
+                                        "nullable": true
+                                    },
+                                    "type": {
+                                        "type": "string",
+                                        "example": "Instant"
+                                    },
+                                    "subtype": {
+                                        "type": "string",
+                                        "example": "Spell",
+                                        "nullable": true
+                                    },
+                                    "power": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "example": null,
+                                        "nullable": true
+                                    },
+                                    "toughness": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "example": null,
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Card created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Card"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/cards/{id}": {
+            "get": {
+                "tags": [
+                    "Cards"
+                ],
+                "summary": "Get a specific card",
+                "description": "Retrieve a specific Magic: The Gathering card with its relationships",
+                "operationId": "bd308067275d232e63f1b561207c465c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Card ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Card"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Card not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Cards"
+                ],
+                "summary": "Update a card",
+                "description": "Update an existing Magic: The Gathering card",
+                "operationId": "b3c8304bb7aa7bd6ab93c12179f9cec1",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Card ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Lightning Bolt"
+                                    },
+                                    "image_url": {
+                                        "type": "string",
+                                        "format": "url",
+                                        "example": "https://example.com/cards/lightning-bolt.jpg",
+                                        "nullable": true
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Lightning Bolt deals 3 damage to any target.",
+                                        "nullable": true
+                                    },
+                                    "cost": {
+                                        "type": "string",
+                                        "example": "{R}",
+                                        "nullable": true
+                                    },
+                                    "type": {
+                                        "type": "string",
+                                        "example": "Instant"
+                                    },
+                                    "subtype": {
+                                        "type": "string",
+                                        "example": "Spell",
+                                        "nullable": true
+                                    },
+                                    "power": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "example": null,
+                                        "nullable": true
+                                    },
+                                    "toughness": {
+                                        "type": "integer",
+                                        "minimum": 0,
+                                        "example": null,
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Card updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Card"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Card not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Cards"
+                ],
+                "summary": "Delete a card",
+                "description": "Delete a Magic: The Gathering card (only if no instances exist)",
+                "operationId": "11c178be9e92d6cae99961ae40786f25",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Card ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Card deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Cannot delete card with existing instances",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Card not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/card-instances": {
+            "get": {
+                "tags": [
+                    "Card Instances"
+                ],
+                "summary": "List all card instances",
+                "description": "Get a paginated list of card instances with optional filtering",
+                "operationId": "f86aba4bd62869282a202eb42bb5b434",
+                "parameters": [
+                    {
+                        "name": "collection_id",
+                        "in": "query",
+                        "description": "Filter by collection ID",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "deck_id",
+                        "in": "query",
+                        "description": "Filter by deck ID",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "available",
+                        "in": "query",
+                        "description": "Filter available instances (not in deck)",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean",
+                            "example": true
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/PaginatedResponse"
+                                        },
+                                        {
+                                            "properties": {
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/CardInstance"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Card Instances"
+                ],
+                "summary": "Create a new card instance",
+                "description": "Create a new physical card instance in a collection",
+                "operationId": "3528099002beb8ba95df6cd9a3c8966f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "card_id",
+                                    "collection_id"
+                                ],
+                                "properties": {
+                                    "card_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "collection_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "condition": {
+                                        "type": "string",
+                                        "enum": [
+                                            "mint",
+                                            "near_mint",
+                                            "lightly_played",
+                                            "moderately_played",
+                                            "heavily_played",
+                                            "damaged"
+                                        ],
+                                        "example": "near_mint"
+                                    },
+                                    "foil": {
+                                        "type": "boolean",
+                                        "example": false
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Card instance created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CardInstance"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/card-instances/{id}": {
+            "get": {
+                "tags": [
+                    "Card Instances"
+                ],
+                "summary": "Get a specific card instance",
+                "description": "Retrieve a specific card instance with its relationships",
+                "operationId": "641b8b495a643737ac7374295fd01b22",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Card Instance ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CardInstance"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Card instance not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Card Instances"
+                ],
+                "summary": "Update a card instance",
+                "description": "Update an existing card instance (condition, foil status)",
+                "operationId": "47ff45209ddb3e9367e0fb9ea8f23396",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Card Instance ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "condition": {
+                                        "type": "string",
+                                        "enum": [
+                                            "mint",
+                                            "near_mint",
+                                            "lightly_played",
+                                            "moderately_played",
+                                            "heavily_played",
+                                            "damaged"
+                                        ],
+                                        "example": "lightly_played"
+                                    },
+                                    "foil": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Card instance updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CardInstance"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Card instance not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Card Instances"
+                ],
+                "summary": "Delete a card instance",
+                "description": "Delete a physical card instance",
+                "operationId": "8d1d52249fe43bba2794da59ac3b3bd3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Card Instance ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Card instance deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Card instance not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/card-instances/{cardInstanceId}/move-to-deck/{deckId}": {
+            "put": {
+                "tags": [
+                    "Card Instances"
+                ],
+                "summary": "Move card instance to deck",
+                "description": "Move a card instance to a specific deck",
+                "operationId": "b73ccf4910945b29ff7a93fdd818e5ef",
+                "parameters": [
+                    {
+                        "name": "cardInstanceId",
+                        "in": "path",
+                        "description": "Card Instance ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "deckId",
+                        "in": "path",
+                        "description": "Deck ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Card instance moved to deck",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CardInstance"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Deck and collection must belong to same user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Card instance or deck not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/card-instances/{id}/remove-from-deck": {
+            "put": {
+                "tags": [
+                    "Card Instances"
+                ],
+                "summary": "Remove card instance from deck",
+                "description": "Remove a card instance from its current deck",
+                "operationId": "dbdd79e3c53697449e3419d7f208b8b4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Card Instance ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Card instance removed from deck",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CardInstance"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Card instance not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/collections": {
+            "get": {
+                "tags": [
+                    "Collections"
+                ],
+                "summary": "List all collections",
+                "description": "Get a paginated list of card collections",
+                "operationId": "8d29964c440a1ce191691a2cf3408462",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/PaginatedResponse"
+                                        },
+                                        {
+                                            "properties": {
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Collection"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Collections"
+                ],
+                "summary": "Create a new collection",
+                "description": "Create a new card collection",
+                "operationId": "f4aa290b8c5210d66436d26b31084018",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "user_id",
+                                    "name"
+                                ],
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "My Main Collection"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Collection of rare and valuable cards",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Collection created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Collection"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/collections/{id}": {
+            "get": {
+                "tags": [
+                    "Collections"
+                ],
+                "summary": "Get a specific collection",
+                "description": "Retrieve a specific collection with its relationships",
+                "operationId": "1672f79b00f0cb620a0c1150636a4fb1",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Collection ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Collection"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Collection not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Collections"
+                ],
+                "summary": "Update a collection",
+                "description": "Update an existing collection",
+                "operationId": "d221c6e809d8620140ac4c29b499bd27",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Collection ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Updated Collection Name"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Updated description",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Collection updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Collection"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Collection not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Collections"
+                ],
+                "summary": "Delete a collection",
+                "description": "Delete a collection (only if no card instances exist)",
+                "operationId": "360e3040a86491d61b7d5ef448955d58",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Collection ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Collection deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Cannot delete collection with card instances",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Collection not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/collections/{id}/card-instances": {
+            "get": {
+                "tags": [
+                    "Collections"
+                ],
+                "summary": "Get collection card instances",
+                "description": "Get all card instances in a specific collection",
+                "operationId": "2f50ebab9606e4cc764730f3b8e3adc8",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Collection ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/PaginatedResponse"
+                                        },
+                                        {
+                                            "properties": {
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/CardInstance"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Collection not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/decks": {
+            "get": {
+                "tags": [
+                    "Decks"
+                ],
+                "summary": "List all decks",
+                "description": "Get a paginated list of decks with optional filtering",
+                "operationId": "0b35f72224f7bde543bf4682a832d341",
+                "parameters": [
+                    {
+                        "name": "format",
+                        "in": "query",
+                        "description": "Filter by deck format",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "Standard",
+                                "Modern",
+                                "Legacy",
+                                "Vintage",
+                                "Commander",
+                                "Pioneer",
+                                "Historic",
+                                "Pauper",
+                                "Limited"
+                            ],
+                            "example": "Modern"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/PaginatedResponse"
+                                        },
+                                        {
+                                            "properties": {
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Deck"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Decks"
+                ],
+                "summary": "Create a new deck",
+                "description": "Create a new Magic: The Gathering deck",
+                "operationId": "b135b34ea836eb3a86fb915623c16c84",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "user_id",
+                                    "name"
+                                ],
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Lightning Burn Deck"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Fast aggressive red deck",
+                                        "nullable": true
+                                    },
+                                    "format": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Standard",
+                                            "Modern",
+                                            "Legacy",
+                                            "Vintage",
+                                            "Commander",
+                                            "Pioneer",
+                                            "Historic",
+                                            "Pauper",
+                                            "Limited"
+                                        ],
+                                        "example": "Modern",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Deck created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Deck"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/decks/{id}": {
+            "get": {
+                "tags": [
+                    "Decks"
+                ],
+                "summary": "Get a specific deck",
+                "description": "Retrieve a specific deck with its card instances",
+                "operationId": "06fcc87ac9300b94ebcf0dd530ae661c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Deck ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Deck"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Deck not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Decks"
+                ],
+                "summary": "Update a deck",
+                "description": "Update an existing deck",
+                "operationId": "9428034784098a14ca5f9c9974ec81b7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Deck ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Updated Deck Name"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Updated description",
+                                        "nullable": true
+                                    },
+                                    "format": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Standard",
+                                            "Modern",
+                                            "Legacy",
+                                            "Vintage",
+                                            "Commander",
+                                            "Pioneer",
+                                            "Historic",
+                                            "Pauper",
+                                            "Limited"
+                                        ],
+                                        "example": "Standard",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Deck updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Deck"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Deck not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Decks"
+                ],
+                "summary": "Delete a deck",
+                "description": "Delete a deck and remove all card instances from it",
+                "operationId": "e2ee99614b2cb6e970fe1e9be5c7c2ef",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Deck ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Deck deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/SuccessResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Deck not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/decks/{id}/card-instances": {
+            "get": {
+                "tags": [
+                    "Decks"
+                ],
+                "summary": "Get deck card instances",
+                "description": "Get all card instances in a specific deck",
+                "operationId": "15b8920554f66cdd5f78b54d17735a7f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Deck ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/PaginatedResponse"
+                                        },
+                                        {
+                                            "properties": {
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/CardInstance"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Deck not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/decks/{deckId}/add-card-instance/{cardInstanceId}": {
+            "post": {
+                "tags": [
+                    "Decks"
+                ],
+                "summary": "Add card instance to deck",
+                "description": "Add a specific card instance to a deck",
+                "operationId": "5fba5e3c8ef873cdf6e4c21016089e03",
+                "parameters": [
+                    {
+                        "name": "deckId",
+                        "in": "path",
+                        "description": "Deck ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "cardInstanceId",
+                        "in": "path",
+                        "description": "Card Instance ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Card instance added to deck",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CardInstance"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Card instance already assigned to a deck",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Deck and card instance must belong to same user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Deck or card instance not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/decks/{deckId}/remove-card-instance/{cardInstanceId}": {
+            "delete": {
+                "tags": [
+                    "Decks"
+                ],
+                "summary": "Remove card instance from deck",
+                "description": "Remove a specific card instance from a deck",
+                "operationId": "848b7103ac5a2b90aafa1a5161ad88bf",
+                "parameters": [
+                    {
+                        "name": "deckId",
+                        "in": "path",
+                        "description": "Deck ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "cardInstanceId",
+                        "in": "path",
+                        "description": "Card Instance ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Card instance removed from deck",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CardInstance"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Card instance does not belong to this deck",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Deck or card instance not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "PaginatedResponse": {
+                "title": "Paginated Response",
+                "description": "Standard paginated response format",
+                "properties": {
+                    "data": {
+                        "description": "Array of resource items",
+                        "type": "array",
+                        "items": {}
+                    },
+                    "meta": {
+                        "properties": {
+                            "current_page": {
+                                "type": "integer",
+                                "example": 1
+                            },
+                            "last_page": {
+                                "type": "integer",
+                                "example": 5
+                            },
+                            "per_page": {
+                                "type": "integer",
+                                "example": 15
+                            },
+                            "total": {
+                                "type": "integer",
+                                "example": 67
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "links": {
+                        "properties": {
+                            "first": {
+                                "type": "string",
+                                "format": "url",
+                                "example": "https://api.example.com/cards?page=1"
+                            },
+                            "last": {
+                                "type": "string",
+                                "format": "url",
+                                "example": "https://api.example.com/cards?page=5"
+                            },
+                            "prev": {
+                                "type": "string",
+                                "format": "url",
+                                "example": null,
+                                "nullable": true
+                            },
+                            "next": {
+                                "type": "string",
+                                "format": "url",
+                                "example": "https://api.example.com/cards?page=2",
+                                "nullable": true
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object"
+            },
+            "ValidationError": {
+                "title": "Validation Error Response",
+                "description": "Response format for validation errors",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "The given data was invalid."
+                    },
+                    "errors": {
+                        "type": "object",
+                        "example": {
+                            "title": [
+                                "The title field is required."
+                            ],
+                            "type": [
+                                "The type field is required."
+                            ]
+                        },
+                        "additionalProperties": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "ErrorResponse": {
+                "title": "Error Response",
+                "description": "Standard error response format",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "Resource not found"
+                    },
+                    "errors": {
+                        "type": "object",
+                        "example": {
+                            "card": [
+                                "This card has existing instances and cannot be deleted"
+                            ]
+                        },
+                        "nullable": true,
+                        "additionalProperties": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "SuccessResponse": {
+                "title": "Success Response",
+                "description": "Standard success response format",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "example": "Operation completed successfully"
+                    }
+                },
+                "type": "object"
+            },
+            "CardInstance": {
+                "title": "Card Instance Resource",
+                "description": "Individual physical card instance resource representation",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "card_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "collection_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "deck_id": {
+                        "type": "integer",
+                        "example": 1,
+                        "nullable": true
+                    },
+                    "condition": {
+                        "type": "string",
+                        "enum": [
+                            "mint",
+                            "near_mint",
+                            "lightly_played",
+                            "moderately_played",
+                            "heavily_played",
+                            "damaged"
+                        ],
+                        "example": "near_mint"
+                    },
+                    "foil": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-01T12:00:00.000000Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-01T12:00:00.000000Z"
+                    },
+                    "card": {
+                        "$ref": "#/components/schemas/Card"
+                    },
+                    "collection": {
+                        "$ref": "#/components/schemas/Collection"
+                    },
+                    "deck": {
+                        "$ref": "#/components/schemas/Deck"
+                    },
+                    "is_in_deck": {
+                        "description": "Whether this instance is assigned to a deck",
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "is_available": {
+                        "description": "Whether this instance is available (not in a deck)",
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "condition_description": {
+                        "description": "Human-readable condition description",
+                        "type": "string",
+                        "example": "Near Mint (NM)"
+                    }
+                },
+                "type": "object"
+            },
+            "Card": {
+                "title": "Card Resource",
+                "description": "Magic: The Gathering card resource",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "Lightning Bolt"
+                    },
+                    "image_url": {
+                        "type": "string",
+                        "format": "url",
+                        "example": "https://example.com/cards/lightning-bolt.jpg",
+                        "nullable": true
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Lightning Bolt deals 3 damage to any target.",
+                        "nullable": true
+                    },
+                    "cost": {
+                        "type": "string",
+                        "example": "{R}",
+                        "nullable": true
+                    },
+                    "type": {
+                        "type": "string",
+                        "example": "Instant"
+                    },
+                    "subtype": {
+                        "type": "string",
+                        "example": "Spell",
+                        "nullable": true
+                    },
+                    "power": {
+                        "type": "integer",
+                        "example": null,
+                        "nullable": true
+                    },
+                    "toughness": {
+                        "type": "integer",
+                        "example": null,
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-01T12:00:00.000000Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-01T12:00:00.000000Z"
+                    },
+                    "card_instances": {
+                        "description": "Card instances (only when relationship is loaded)",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CardInstance"
+                        }
+                    },
+                    "collections": {
+                        "description": "Collections containing this card (only when relationship is loaded)",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Collection"
+                        }
+                    },
+                    "decks": {
+                        "description": "Decks containing this card (only when relationship is loaded)",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Deck"
+                        }
+                    },
+                    "total_instances": {
+                        "description": "Total number of instances of this card",
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "instances_in_decks": {
+                        "description": "Number of instances currently in decks",
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "available_instances": {
+                        "description": "Number of instances not in decks",
+                        "type": "integer",
+                        "example": 3
+                    }
+                },
+                "type": "object"
+            },
+            "Collection": {
+                "title": "Collection Resource",
+                "description": "Card collection resource representation",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "My Main Collection"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Collection of rare and valuable cards",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-01T12:00:00.000000Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-01T12:00:00.000000Z"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "card_instances": {
+                        "description": "Card instances in this collection (only when relationship is loaded)",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CardInstance"
+                        }
+                    },
+                    "total_card_instances": {
+                        "description": "Total number of card instances in collection",
+                        "type": "integer",
+                        "example": 150
+                    },
+                    "cards_in_decks": {
+                        "description": "Number of cards currently assigned to decks",
+                        "type": "integer",
+                        "example": 60
+                    },
+                    "available_cards": {
+                        "description": "Number of cards not assigned to decks",
+                        "type": "integer",
+                        "example": 90
+                    },
+                    "unique_cards": {
+                        "description": "Number of unique card types in collection",
+                        "type": "integer",
+                        "example": 75
+                    }
+                },
+                "type": "object"
+            },
+            "Deck": {
+                "title": "Deck Resource",
+                "description": "Magic: The Gathering deck resource representation",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Lightning Burn Deck"
+                    },
+                    "description": {
+                        "type": "string",
+                        "example": "Fast aggressive red deck focused on direct damage",
+                        "nullable": true
+                    },
+                    "format": {
+                        "type": "string",
+                        "enum": [
+                            "Standard",
+                            "Modern",
+                            "Legacy",
+                            "Vintage",
+                            "Commander",
+                            "Pioneer",
+                            "Historic",
+                            "Pauper",
+                            "Limited"
+                        ],
+                        "example": "Modern",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-01T12:00:00.000000Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-01T12:00:00.000000Z"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "card_instances": {
+                        "description": "Card instances in this deck (only when relationship is loaded)",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CardInstance"
+                        }
+                    },
+                    "total_cards": {
+                        "description": "Total number of cards in deck",
+                        "type": "integer",
+                        "example": 60
+                    },
+                    "unique_cards": {
+                        "description": "Number of unique card types in deck",
+                        "type": "integer",
+                        "example": 25
+                    },
+                    "card_counts": {
+                        "description": "Detailed card counts and conditions (only when card instances are loaded)",
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "card_id": {
+                                    "type": "integer",
+                                    "example": 1
+                                },
+                                "card_title": {
+                                    "type": "string",
+                                    "example": "Lightning Bolt"
+                                },
+                                "quantity": {
+                                    "type": "integer",
+                                    "example": 4
+                                },
+                                "conditions": {
+                                    "type": "object",
+                                    "example": {
+                                        "near_mint": 3,
+                                        "lightly_played": 1
+                                    },
+                                    "additionalProperties": {
+                                        "type": "integer"
+                                    }
+                                },
+                                "foil_count": {
+                                    "type": "integer",
+                                    "example": 1
+                                },
+                                "non_foil_count": {
+                                    "type": "integer",
+                                    "example": 3
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "User": {
+                "title": "User Resource",
+                "description": "User resource representation",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "example": "john@example.com"
+                    },
+                    "email_verified_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-01T12:00:00.000000Z",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-01T12:00:00.000000Z"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2024-01-01T12:00:00.000000Z"
+                    },
+                    "collections": {
+                        "description": "User collections (only when relationship is loaded)",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Collection"
+                        }
+                    },
+                    "decks": {
+                        "description": "User decks (only when relationship is loaded)",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Deck"
+                        }
+                    },
+                    "total_collections": {
+                        "description": "Total number of collections owned by user",
+                        "type": "integer",
+                        "example": 3
+                    },
+                    "total_decks": {
+                        "description": "Total number of decks owned by user",
+                        "type": "integer",
+                        "example": 5
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Cards",
+            "description": "Magic: The Gathering card management"
+        },
+        {
+            "name": "Card Instances",
+            "description": "Individual physical card instance management"
+        },
+        {
+            "name": "Collections",
+            "description": "Card collection management"
+        },
+        {
+            "name": "Decks",
+            "description": "Magic: The Gathering deck management"
+        }
+    ]
+}

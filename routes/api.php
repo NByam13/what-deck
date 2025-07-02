@@ -1,10 +1,16 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CardController;
 use App\Http\Controllers\CardInstanceController;
 use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\DeckController;
+use App\Http\Controllers\ImportController;
+
+Route::get('/user', function (Request $request) {
+    return $request->user();
+})->middleware('auth:sanctum');
 
 // Card template routes
 Route::apiResource('cards', CardController::class);
@@ -22,4 +28,8 @@ Route::get('collections/{collection}/card-instances', [CollectionController::cla
 Route::apiResource('decks', DeckController::class);
 Route::get('decks/{deck}/card-instances', [DeckController::class, 'cardInstances']);
 Route::post('decks/{deck}/add-card-instance/{cardInstance}', [DeckController::class, 'addCardInstance']);
-Route::delete('decks/{deck}/remove-card-instance/{cardInstance}', [DeckController::class, 'removeCardInstance']); 
+Route::delete('decks/{deck}/remove-card-instance/{cardInstance}', [DeckController::class, 'removeCardInstance']);
+
+// Import routes
+Route::get('import/formats', [ImportController::class, 'supportedFormats']);
+Route::post('collections/{collection}/import/moxfield', [ImportController::class, 'moxfield']); 

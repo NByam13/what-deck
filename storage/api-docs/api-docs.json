@@ -12,14 +12,14 @@
         }
     ],
     "paths": {
-        "/api/cards": {
+        "/cards": {
             "get": {
                 "tags": [
                     "Cards"
                 ],
                 "summary": "List all cards",
                 "description": "Get a paginated list of Magic: The Gathering cards with optional filtering",
-                "operationId": "0cf776c75245f5f70e78d1981e3398c2",
+                "operationId": "e1710b39810207a38a8d9fa5d8ed4407",
                 "parameters": [
                     {
                         "name": "type",
@@ -97,7 +97,7 @@
                 ],
                 "summary": "Create a new card",
                 "description": "Create a new Magic: The Gathering card",
-                "operationId": "6a1db83adb51fba2ac318a78bc2a4fde",
+                "operationId": "f2ac6dc4dc4f0cc90f016cbe8b02fb10",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -179,14 +179,14 @@
                 }
             }
         },
-        "/api/cards/{id}": {
+        "/cards/{id}": {
             "get": {
                 "tags": [
                     "Cards"
                 ],
                 "summary": "Get a specific card",
                 "description": "Retrieve a specific Magic: The Gathering card with its relationships",
-                "operationId": "bd308067275d232e63f1b561207c465c",
+                "operationId": "af26c5e68f333f1dfadd1bfa227eb617",
                 "parameters": [
                     {
                         "name": "id",
@@ -228,7 +228,7 @@
                 ],
                 "summary": "Update a card",
                 "description": "Update an existing Magic: The Gathering card",
-                "operationId": "b3c8304bb7aa7bd6ab93c12179f9cec1",
+                "operationId": "fe7b2d31eb73d88c9c7884acaee234d0",
                 "parameters": [
                     {
                         "name": "id",
@@ -333,7 +333,7 @@
                 ],
                 "summary": "Delete a card",
                 "description": "Delete a Magic: The Gathering card (only if no instances exist)",
-                "operationId": "11c178be9e92d6cae99961ae40786f25",
+                "operationId": "bdb2c37c481aff6ee4b63a61add8471d",
                 "parameters": [
                     {
                         "name": "id",
@@ -380,14 +380,14 @@
                 }
             }
         },
-        "/api/card-instances": {
+        "/card-instances": {
             "get": {
                 "tags": [
                     "Card Instances"
                 ],
                 "summary": "List all card instances",
                 "description": "Get a paginated list of card instances with optional filtering",
-                "operationId": "f86aba4bd62869282a202eb42bb5b434",
+                "operationId": "43cb51bad0c2592e94aeb9b6058ec63e",
                 "parameters": [
                     {
                         "name": "collection_id",
@@ -465,7 +465,7 @@
                 ],
                 "summary": "Create a new card instance",
                 "description": "Create a new physical card instance in a collection",
-                "operationId": "3528099002beb8ba95df6cd9a3c8966f",
+                "operationId": "20316a63c8e300e426caed664c478b44",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -530,14 +530,14 @@
                 }
             }
         },
-        "/api/card-instances/{id}": {
+        "/card-instances/{id}": {
             "get": {
                 "tags": [
                     "Card Instances"
                 ],
                 "summary": "Get a specific card instance",
                 "description": "Retrieve a specific card instance with its relationships",
-                "operationId": "641b8b495a643737ac7374295fd01b22",
+                "operationId": "b76383f8f51b4cd598f3c8098e222af0",
                 "parameters": [
                     {
                         "name": "id",
@@ -579,7 +579,7 @@
                 ],
                 "summary": "Update a card instance",
                 "description": "Update an existing card instance (condition, foil status)",
-                "operationId": "47ff45209ddb3e9367e0fb9ea8f23396",
+                "operationId": "6bebdc34c1aa1897d2754977edfe3fa3",
                 "parameters": [
                     {
                         "name": "id",
@@ -659,7 +659,7 @@
                 ],
                 "summary": "Delete a card instance",
                 "description": "Delete a physical card instance",
-                "operationId": "8d1d52249fe43bba2794da59ac3b3bd3",
+                "operationId": "3805861d14d0653e8969dd247ba08888",
                 "parameters": [
                     {
                         "name": "id",
@@ -696,14 +696,14 @@
                 }
             }
         },
-        "/api/card-instances/{cardInstanceId}/move-to-deck/{deckId}": {
+        "/card-instances/{cardInstanceId}/move-to-deck/{deckId}": {
             "put": {
                 "tags": [
                     "Card Instances"
                 ],
                 "summary": "Move card instance to deck",
                 "description": "Move a card instance to a specific deck",
-                "operationId": "b73ccf4910945b29ff7a93fdd818e5ef",
+                "operationId": "35d85c3b86b00151ec0a2c9adc87eafb",
                 "parameters": [
                     {
                         "name": "cardInstanceId",
@@ -760,14 +760,14 @@
                 }
             }
         },
-        "/api/card-instances/{id}/remove-from-deck": {
+        "/card-instances/{id}/remove-from-deck": {
             "put": {
                 "tags": [
                     "Card Instances"
                 ],
                 "summary": "Remove card instance from deck",
                 "description": "Remove a card instance from its current deck",
-                "operationId": "dbdd79e3c53697449e3419d7f208b8b4",
+                "operationId": "a255686d5ca4b47939becb9955060fe4",
                 "parameters": [
                     {
                         "name": "id",
@@ -804,14 +804,14 @@
                 }
             }
         },
-        "/api/collections": {
+        "/collections": {
             "get": {
                 "tags": [
                     "Collections"
                 ],
                 "summary": "List all collections",
                 "description": "Get a paginated list of card collections",
-                "operationId": "8d29964c440a1ce191691a2cf3408462",
+                "operationId": "7b241eefae469d00143adf95e94029b1",
                 "parameters": [
                     {
                         "name": "page",
@@ -859,7 +859,7 @@
                 ],
                 "summary": "Create a new collection",
                 "description": "Create a new card collection",
-                "operationId": "f4aa290b8c5210d66436d26b31084018",
+                "operationId": "e22d3436e9fcb5530d8a74cb9f124037",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -913,14 +913,14 @@
                 }
             }
         },
-        "/api/collections/{id}": {
+        "/collections/{id}": {
             "get": {
                 "tags": [
                     "Collections"
                 ],
                 "summary": "Get a specific collection",
                 "description": "Retrieve a specific collection with its relationships",
-                "operationId": "1672f79b00f0cb620a0c1150636a4fb1",
+                "operationId": "5346e26517da2213584c2e3c0ea2798c",
                 "parameters": [
                     {
                         "name": "id",
@@ -962,7 +962,7 @@
                 ],
                 "summary": "Update a collection",
                 "description": "Update an existing collection",
-                "operationId": "d221c6e809d8620140ac4c29b499bd27",
+                "operationId": "d353584391ab8d68997dce8bd03fdb14",
                 "parameters": [
                     {
                         "name": "id",
@@ -1035,7 +1035,7 @@
                 ],
                 "summary": "Delete a collection",
                 "description": "Delete a collection (only if no card instances exist)",
-                "operationId": "360e3040a86491d61b7d5ef448955d58",
+                "operationId": "32002b244bf5d7d47b4fd5033a6e7414",
                 "parameters": [
                     {
                         "name": "id",
@@ -1082,14 +1082,14 @@
                 }
             }
         },
-        "/api/collections/{id}/card-instances": {
+        "/collections/{id}/card-instances": {
             "get": {
                 "tags": [
                     "Collections"
                 ],
                 "summary": "Get collection card instances",
                 "description": "Get all card instances in a specific collection",
-                "operationId": "2f50ebab9606e4cc764730f3b8e3adc8",
+                "operationId": "5257271b071bf1d15abe7f82c340f1aa",
                 "parameters": [
                     {
                         "name": "id",
@@ -1152,14 +1152,14 @@
                 }
             }
         },
-        "/api/decks": {
+        "/decks": {
             "get": {
                 "tags": [
                     "Decks"
                 ],
                 "summary": "List all decks",
                 "description": "Get a paginated list of decks with optional filtering",
-                "operationId": "0b35f72224f7bde543bf4682a832d341",
+                "operationId": "d6dfa38dfa422cd427621f3ff77a34a5",
                 "parameters": [
                     {
                         "name": "format",
@@ -1228,7 +1228,7 @@
                 ],
                 "summary": "Create a new deck",
                 "description": "Create a new Magic: The Gathering deck",
-                "operationId": "b135b34ea836eb3a86fb915623c16c84",
+                "operationId": "440e1df5188ad208c3ffd34b2d438509",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1298,14 +1298,14 @@
                 }
             }
         },
-        "/api/decks/{id}": {
+        "/decks/{id}": {
             "get": {
                 "tags": [
                     "Decks"
                 ],
                 "summary": "Get a specific deck",
                 "description": "Retrieve a specific deck with its card instances",
-                "operationId": "06fcc87ac9300b94ebcf0dd530ae661c",
+                "operationId": "ffa89b4f5b538eb6e647b02d4deb1064",
                 "parameters": [
                     {
                         "name": "id",
@@ -1347,7 +1347,7 @@
                 ],
                 "summary": "Update a deck",
                 "description": "Update an existing deck",
-                "operationId": "9428034784098a14ca5f9c9974ec81b7",
+                "operationId": "6ebf8cc416e17ae71e4f7a66f04f0959",
                 "parameters": [
                     {
                         "name": "id",
@@ -1436,7 +1436,7 @@
                 ],
                 "summary": "Delete a deck",
                 "description": "Delete a deck and remove all card instances from it",
-                "operationId": "e2ee99614b2cb6e970fe1e9be5c7c2ef",
+                "operationId": "b2f9368943c411c8f9bfe902e985a5d9",
                 "parameters": [
                     {
                         "name": "id",
@@ -1473,14 +1473,14 @@
                 }
             }
         },
-        "/api/decks/{id}/card-instances": {
+        "/decks/{id}/card-instances": {
             "get": {
                 "tags": [
                     "Decks"
                 ],
                 "summary": "Get deck card instances",
                 "description": "Get all card instances in a specific deck",
-                "operationId": "15b8920554f66cdd5f78b54d17735a7f",
+                "operationId": "9c745daa6d09560b810474b010356a35",
                 "parameters": [
                     {
                         "name": "id",
@@ -1543,14 +1543,14 @@
                 }
             }
         },
-        "/api/decks/{deckId}/add-card-instance/{cardInstanceId}": {
+        "/decks/{deckId}/add-card-instance/{cardInstanceId}": {
             "post": {
                 "tags": [
                     "Decks"
                 ],
                 "summary": "Add card instance to deck",
                 "description": "Add a specific card instance to a deck",
-                "operationId": "5fba5e3c8ef873cdf6e4c21016089e03",
+                "operationId": "b3f5a348646dadc71b366ca5c243c552",
                 "parameters": [
                     {
                         "name": "deckId",
@@ -1617,14 +1617,14 @@
                 }
             }
         },
-        "/api/decks/{deckId}/remove-card-instance/{cardInstanceId}": {
+        "/decks/{deckId}/remove-card-instance/{cardInstanceId}": {
             "delete": {
                 "tags": [
                     "Decks"
                 ],
                 "summary": "Remove card instance from deck",
                 "description": "Remove a specific card instance from a deck",
-                "operationId": "848b7103ac5a2b90aafa1a5161ad88bf",
+                "operationId": "3140b09674198cec1adaae8d16d09a3c",
                 "parameters": [
                     {
                         "name": "deckId",
@@ -1674,6 +1674,196 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/collections/{id}/import/moxfield": {
+            "post": {
+                "tags": [
+                    "Import"
+                ],
+                "summary": "Import Moxfield CSV",
+                "description": "Import cards from a Moxfield CSV export into a specific collection",
+                "operationId": "e9b83a1bc7f6da2d31eb409a1f3909c2",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Collection ID to import cards into",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "csv_file"
+                                ],
+                                "properties": {
+                                    "csv_file": {
+                                        "description": "Moxfield CSV export file",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "create_missing_cards": {
+                                        "description": "Whether to create new card records for unknown cards",
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Import completed successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Import completed successfully"
+                                        },
+                                        "stats": {
+                                            "properties": {
+                                                "processed": {
+                                                    "type": "integer",
+                                                    "example": 150
+                                                },
+                                                "cards_created": {
+                                                    "type": "integer",
+                                                    "example": 75
+                                                },
+                                                "cards_found": {
+                                                    "type": "integer",
+                                                    "example": 75
+                                                },
+                                                "instances_created": {
+                                                    "type": "integer",
+                                                    "example": 150
+                                                },
+                                                "errors": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "row": {
+                                                                "type": "integer",
+                                                                "example": 5
+                                                            },
+                                                            "message": {
+                                                                "type": "string",
+                                                                "example": "Invalid condition value"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid file or import error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Collection not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/import/formats": {
+            "get": {
+                "tags": [
+                    "Import"
+                ],
+                "summary": "Get supported import formats",
+                "description": "Get list of supported import formats and their requirements",
+                "operationId": "b52b8acb8cb6ff8fe7f2c6cc82ce00a6",
+                "responses": {
+                    "200": {
+                        "description": "List of supported import formats",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "formats": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Moxfield"
+                                                    },
+                                                    "description": {
+                                                        "type": "string",
+                                                        "example": "Import from Moxfield CSV export"
+                                                    },
+                                                    "endpoint": {
+                                                        "type": "string",
+                                                        "example": "/collections/{id}/import/moxfield"
+                                                    },
+                                                    "required_columns": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string"
+                                                        },
+                                                        "example": [
+                                                            "Count",
+                                                            "Name",
+                                                            "Edition",
+                                                            "Condition",
+                                                            "Language",
+                                                            "Foil"
+                                                        ]
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
                                 }
                             }
                         }
@@ -1846,6 +2036,36 @@
                         "type": "boolean",
                         "example": false
                     },
+                    "language": {
+                        "type": "string",
+                        "example": "English"
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": [
+                            "red",
+                            "burn",
+                            "instant"
+                        ],
+                        "nullable": true
+                    },
+                    "purchase_price": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 12.5,
+                        "nullable": true
+                    },
+                    "alter": {
+                        "type": "boolean",
+                        "example": false
+                    },
+                    "proxy": {
+                        "type": "boolean",
+                        "example": false
+                    },
                     "created_at": {
                         "type": "string",
                         "format": "date-time",
@@ -1928,6 +2148,16 @@
                     "toughness": {
                         "type": "integer",
                         "example": null,
+                        "nullable": true
+                    },
+                    "edition": {
+                        "type": "string",
+                        "example": "dft",
+                        "nullable": true
+                    },
+                    "collector_number": {
+                        "type": "string",
+                        "example": "187",
                         "nullable": true
                     },
                     "created_at": {
@@ -2230,6 +2460,10 @@
         {
             "name": "Decks",
             "description": "Magic: The Gathering deck management"
+        },
+        {
+            "name": "Import",
+            "description": "Card collection import operations"
         }
     ]
 }

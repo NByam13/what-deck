@@ -15,7 +15,7 @@ use OpenApi\Attributes as OA;
 class CardInstanceController extends Controller
 {
     #[OA\Get(
-        path: '/api/card-instances',
+        path: '/card-instances',
         description: 'Get a paginated list of card instances with optional filtering',
         summary: 'List all card instances',
         tags: ['Card Instances'],
@@ -72,7 +72,7 @@ class CardInstanceController extends Controller
     }
 
     #[OA\Post(
-        path: '/api/card-instances',
+        path: '/card-instances',
         summary: 'Create a new card instance',
         description: 'Create a new physical card instance in a collection',
         tags: ['Card Instances'],
@@ -102,7 +102,7 @@ class CardInstanceController extends Controller
     }
 
     #[OA\Get(
-        path: '/api/card-instances/{id}',
+        path: '/card-instances/{id}',
         summary: 'Get a specific card instance',
         description: 'Retrieve a specific card instance with its relationships',
         tags: ['Card Instances'],
@@ -120,7 +120,7 @@ class CardInstanceController extends Controller
     }
 
     #[OA\Put(
-        path: '/api/card-instances/{id}',
+        path: '/card-instances/{id}',
         summary: 'Update a card instance',
         description: 'Update an existing card instance (condition, foil status)',
         tags: ['Card Instances'],
@@ -146,7 +146,7 @@ class CardInstanceController extends Controller
     }
 
     #[OA\Delete(
-        path: '/api/card-instances/{id}',
+        path: '/card-instances/{id}',
         summary: 'Delete a card instance',
         description: 'Delete a physical card instance',
         tags: ['Card Instances'],
@@ -166,7 +166,7 @@ class CardInstanceController extends Controller
     }
 
     #[OA\Put(
-        path: '/api/card-instances/{cardInstanceId}/move-to-deck/{deckId}',
+        path: '/card-instances/{cardInstanceId}/move-to-deck/{deckId}',
         summary: 'Move card instance to deck',
         description: 'Move a card instance to a specific deck',
         tags: ['Card Instances'],
@@ -199,7 +199,7 @@ class CardInstanceController extends Controller
     }
 
     #[OA\Put(
-        path: '/api/card-instances/{id}/remove-from-deck',
+        path: '/card-instances/{id}/remove-from-deck',
         summary: 'Remove card instance from deck',
         description: 'Remove a card instance from its current deck',
         tags: ['Card Instances'],

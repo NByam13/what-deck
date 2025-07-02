@@ -125,4 +125,54 @@ class CardControllerTest extends TestCase
         $this->assertCount(1, $data);
         $this->assertEquals('Creature', $data[0]['type']);
     }
+
+    /** @test */
+    public function cannot_create_duplicate_cards_with_same_printing()
+    {
+        // Create the first card
+        $cardData = [
+            'title' => 'Lightning Bolt',
+            'edition' => 'LEA',
+            'collector_number' => '162',
+            'type' => 'Instant'
+        ];
+        
+        $response1 = $this->postJson('/api/cards', $cardData);
+        $response1->assertStatus(201);
+
+        // Try to create the same card again (should fail due to unique constraint)
+        $response2 = $this->postJson('/api/cards', $cardData);
+        $response2->assertStatus(500); // Database constraint violation
+        
+        // Verify only one card exists
+        $this->assertEquals(1, Card::where('title', 'Lightning Bolt')->count());
+    }
+
+    /** @test */
+    public function can_create_same_card_from_different_editions()
+    {
+        // Same card name but different editions should be allowed
+        $card1Data = [
+            'title' => 'Lightning Bolt',
+            'edition' => 'LEA',
+            'collector_number' => '162',
+            'type' => 'Instant'
+        ];
+        
+        $card2Data = [
+            'title' => 'Lightning Bolt',
+            'edition' => 'M21',
+            'collector_number' => '148',
+            'type' => 'Instant'
+        ];
+        
+        $response1 = $this->postJson('/api/cards', $card1Data);
+        $response1->assertStatus(201);
+
+        $response2 = $this->postJson('/api/cards', $card2Data);
+        $response2->assertStatus(201);
+        
+        // Verify both cards exist
+        $this->assertEquals(2, Card::where('title', 'Lightning Bolt')->count());
+    }
 }

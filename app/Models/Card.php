@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Card extends Model
 {
@@ -18,6 +19,8 @@ class Card extends Model
         'subtype',
         'power',
         'toughness',
+        'edition',
+        'collector_number',
     ];
 
     protected $casts = [
@@ -26,15 +29,15 @@ class Card extends Model
     ];
 
     /**
-     * Get all card instances of this card.
+     * Get all card instances for this card.
      */
-    public function cardInstances()
+    public function cardInstances(): HasMany
     {
         return $this->hasMany(CardInstance::class);
     }
 
     /**
-     * Get all collections that contain instances of this card.
+     * Get collections that contain this card.
      */
     public function collections()
     {
@@ -42,7 +45,7 @@ class Card extends Model
     }
 
     /**
-     * Get all decks that contain instances of this card.
+     * Get decks that contain this card.
      */
     public function decks()
     {

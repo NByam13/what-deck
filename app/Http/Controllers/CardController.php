@@ -14,7 +14,7 @@ use OpenApi\Attributes as OA;
 class CardController extends Controller
 {
     #[OA\Get(
-        path: '/api/cards',
+        path: '/cards',
         description: 'Get a paginated list of Magic: The Gathering cards with optional filtering',
         summary: 'List all cards',
         tags: ['Cards'],
@@ -108,7 +108,7 @@ class CardController extends Controller
     }
 
     #[OA\Post(
-        path: '/api/cards',
+        path: '/cards',
         description: 'Create a new Magic: The Gathering card',
         summary: 'Create a new card',
         requestBody: new OA\RequestBody(
@@ -152,7 +152,7 @@ class CardController extends Controller
     }
 
     #[OA\Get(
-        path: '/api/cards/{id}',
+        path: '/cards/{id}',
         description: 'Retrieve a specific Magic: The Gathering card with its relationships',
         summary: 'Get a specific card',
         tags: ['Cards'],
@@ -186,7 +186,7 @@ class CardController extends Controller
     }
 
     #[OA\Put(
-        path: '/api/cards/{id}',
+        path: '/cards/{id}',
         summary: 'Update a card',
         description: 'Update an existing Magic: The Gathering card',
         tags: ['Cards'],
@@ -240,7 +240,7 @@ class CardController extends Controller
     }
 
     #[OA\Delete(
-        path: '/api/cards/{id}',
+        path: '/cards/{id}',
         summary: 'Delete a card',
         description: 'Delete a Magic: The Gathering card (only if no instances exist)',
         tags: ['Cards'],

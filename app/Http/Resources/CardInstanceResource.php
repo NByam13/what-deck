@@ -17,6 +17,17 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: 'deck_id', type: 'integer', nullable: true, example: 1),
         new OA\Property(property: 'condition', type: 'string', enum: ['mint', 'near_mint', 'lightly_played', 'moderately_played', 'heavily_played', 'damaged'], example: 'near_mint'),
         new OA\Property(property: 'foil', type: 'boolean', example: false),
+        new OA\Property(property: 'language', type: 'string', example: 'English'),
+        new OA\Property(
+            property: 'tags',
+            type: 'array',
+            items: new OA\Items(type: 'string'),
+            nullable: true,
+            example: ['red', 'burn', 'instant']
+        ),
+        new OA\Property(property: 'purchase_price', type: 'number', format: 'float', nullable: true, example: 12.50),
+        new OA\Property(property: 'alter', type: 'boolean', example: false),
+        new OA\Property(property: 'proxy', type: 'boolean', example: false),
         new OA\Property(property: 'created_at', type: 'string', format: 'date-time', example: '2024-01-01T12:00:00.000000Z'),
         new OA\Property(property: 'updated_at', type: 'string', format: 'date-time', example: '2024-01-01T12:00:00.000000Z'),
         new OA\Property(
@@ -56,6 +67,11 @@ class CardInstanceResource extends JsonResource
             'deck_id' => $this->deck_id,
             'condition' => $this->condition,
             'foil' => $this->foil,
+            'language' => $this->language,
+            'tags' => $this->tags,
+            'purchase_price' => $this->purchase_price,
+            'alter' => $this->alter,
+            'proxy' => $this->proxy,
             'created_at' => $this->created_at?->toISOString(),
             'updated_at' => $this->updated_at?->toISOString(),
 

@@ -30,6 +30,8 @@ class UpdateCardRequest extends FormRequest
             'subtype' => 'nullable|string|max:100',
             'power' => 'nullable|integer|min:0|max:999',
             'toughness' => 'nullable|integer|min:0|max:999',
+            'edition' => 'nullable|string|max:10',
+            'collector_number' => 'nullable|string|max:20',
         ];
     }
 

@@ -27,6 +27,11 @@ class CardInstanceFactory extends Factory
             'deck_id' => null, // Most instances start unassigned
             'condition' => $this->faker->randomElement(['mint', 'near_mint', 'lightly_played', 'moderately_played', 'heavily_played', 'damaged']),
             'foil' => $this->faker->boolean(20), // 20% chance of being foil
+            'language' => $this->faker->randomElement(['English', 'Spanish', 'French', 'German', 'Italian', 'Portuguese', 'Japanese', 'Korean', 'Russian', 'Chinese Simplified']),
+            'tags' => $this->faker->optional(30)->randomElements(['red', 'burn', 'instant', 'creature', 'artifact', 'legendary', 'rare'], $this->faker->numberBetween(1, 3)),
+            'purchase_price' => $this->faker->optional(40)->randomFloat(2, 0.50, 100.00),
+            'alter' => $this->faker->boolean(5), // 5% chance of being altered
+            'proxy' => $this->faker->boolean(2), // 2% chance of being a proxy
         ];
     }
 

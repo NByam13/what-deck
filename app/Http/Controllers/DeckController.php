@@ -16,7 +16,7 @@ use OpenApi\Attributes as OA;
 class DeckController extends Controller
 {
     #[OA\Get(
-        path: '/api/decks',
+        path: '/decks',
         description: 'Get a paginated list of decks with optional filtering',
         summary: 'List all decks',
         tags: ['Decks'],
@@ -62,7 +62,7 @@ class DeckController extends Controller
     }
 
     #[OA\Post(
-        path: '/api/decks',
+        path: '/decks',
         summary: 'Create a new deck',
         description: 'Create a new Magic: The Gathering deck',
         tags: ['Decks'],
@@ -91,7 +91,7 @@ class DeckController extends Controller
     }
 
     #[OA\Get(
-        path: '/api/decks/{id}',
+        path: '/decks/{id}',
         summary: 'Get a specific deck',
         description: 'Retrieve a specific deck with its card instances',
         tags: ['Decks'],
@@ -109,7 +109,7 @@ class DeckController extends Controller
     }
 
     #[OA\Put(
-        path: '/api/decks/{id}',
+        path: '/decks/{id}',
         summary: 'Update a deck',
         description: 'Update an existing deck',
         tags: ['Decks'],
@@ -135,7 +135,7 @@ class DeckController extends Controller
     }
 
     #[OA\Delete(
-        path: '/api/decks/{id}',
+        path: '/decks/{id}',
         summary: 'Delete a deck',
         description: 'Delete a deck and remove all card instances from it',
         tags: ['Decks'],
@@ -158,7 +158,7 @@ class DeckController extends Controller
     }
 
     #[OA\Get(
-        path: '/api/decks/{id}/card-instances',
+        path: '/decks/{id}/card-instances',
         summary: 'Get deck card instances',
         description: 'Get all card instances in a specific deck',
         tags: ['Decks'],
@@ -199,7 +199,7 @@ class DeckController extends Controller
     }
 
     #[OA\Post(
-        path: '/api/decks/{deckId}/add-card-instance/{cardInstanceId}',
+        path: '/decks/{deckId}/add-card-instance/{cardInstanceId}',
         summary: 'Add card instance to deck',
         description: 'Add a specific card instance to a deck',
         tags: ['Decks'],
@@ -243,7 +243,7 @@ class DeckController extends Controller
     }
 
     #[OA\Delete(
-        path: '/api/decks/{deckId}/remove-card-instance/{cardInstanceId}',
+        path: '/decks/{deckId}/remove-card-instance/{cardInstanceId}',
         summary: 'Remove card instance from deck',
         description: 'Remove a specific card instance from a deck',
         tags: ['Decks'],

@@ -1,191 +1,296 @@
 # What Deck API Documentation
 
-A comprehensive Magic: The Gathering card collection management API built with Laravel 11.
+This document provides comprehensive information about the Magic: The Gathering card collection management API.
 
-## 🚀 OpenAPI/Swagger Documentation
+## Table of Contents
+- [Overview](#overview)
+- [Authentication](#authentication)
+- [Data Models](#data-models)
+- [API Endpoints](#api-endpoints)
+- [Import Functionality](#import-functionality)
+- [Error Handling](#error-handling)
+- [OpenAPI Documentation](#openapi-documentation)
 
-This API is fully documented using **OpenAPI 3.0.0** specification with interactive Swagger UI.
+## Overview
 
-### Accessing the Documentation
+The What Deck API is a comprehensive solution for managing Magic: The Gathering card collections. It allows users to:
 
-- **Interactive Swagger UI**: `http://localhost:8000/api/documentation`
-- **JSON Specification**: `http://localhost:8000/docs`
-- **Generated Spec File**: `storage/api-docs/api-docs.json`
+- **Manage Cards**: Store MTG card templates with detailed metadata
+- **Track Collections**: Organize physical cards into collections (like storage boxes)
+- **Build Decks**: Create constructed decks from your card instances
+- **Import Collections**: Import existing collections from popular platforms like Moxfield
+- **Individual Card Tracking**: Each physical card is tracked separately with condition, foil status, and more
 
-### Implementation Details
+## Authentication
 
-The OpenAPI documentation is implemented using **swagger-php** with PHP 8 attributes:
+Currently, the API uses Laravel Sanctum for authentication (routes are set up but not enforced in current version).
 
-#### Resource Schemas (5 schemas)
-- **Card**: MTG card template with relationships and computed properties
-- **CardInstance**: Individual physical card with condition and deck assignment
-- **Collection**: User collections with card statistics
-- **Deck**: Constructed decks with card composition analysis
-- **User**: User data with collection/deck relationships
+## Data Models
 
-#### Common Response Schemas (4 schemas)
-- **PaginatedResponse**: Standard pagination format
-- **ValidationError**: Form validation error responses
-- **ErrorResponse**: General error responses  
-- **SuccessResponse**: Success confirmation responses
+### Card
+Represents a Magic: The Gathering card template/definition.
 
-#### API Coverage
-- **14 documented endpoints** across 4 resource controllers
-- **4 API tags**: Cards, Card Instances, Collections, Decks
-- **29 total operations** (GET, POST, PUT, DELETE)
+**Fields:**
+- `id`: Unique identifier
+- `title`: Card name
+- `image_url`: URL to card image
+- `description`: Card description/rules text
+- `cost`: Mana cost
+- `type`: Card type (Creature, Instant, etc.)
+- `subtype`: Card subtype (Human, Warrior, etc.)
+- `power`: Creature power (nullable)
+- `toughness`: Creature toughness (nullable)
+- `edition`: Set/edition code (e.g., "dft", "afr")
+- `collector_number`: Collector number within set
+- `created_at`: Creation timestamp
+- `updated_at`: Last update timestamp
 
-#### Advanced Features
-- Comprehensive parameter documentation with examples
-- Request/response body schemas with validation rules
-- Relationship handling (conditional loading)
-- Error response documentation with proper HTTP status codes
-- Filtering and pagination parameter documentation
-- Computed properties and business logic documentation
+### CardInstance
+Represents a physical copy of a card in someone's collection.
 
-## 📋 API Endpoints
+**Fields:**
+- `id`: Unique identifier
+- `card_id`: Reference to Card template
+- `collection_id`: Which collection owns this instance
+- `deck_id`: Which deck contains this instance (nullable)
+- `condition`: Physical condition (mint, near_mint, lightly_played, etc.)
+- `foil`: Whether the card is foil
+- `language`: Card language (default: English)
+- `tags`: User-defined tags (JSON array)
+- `purchase_price`: What was paid for this card
+- `alter`: Whether the card is altered
+- `proxy`: Whether this is a proxy card
+- `created_at`: Creation timestamp
+- `updated_at`: Last update timestamp
 
-### Cards Management
-- `GET /api/cards` - List cards with filtering (type, subtype, search)
-- `POST /api/cards` - Create new card
-- `GET /api/cards/{id}` - Get specific card with relationships
+### Collection
+Represents a storage container/collection (like a binder or box).
+
+**Fields:**
+- `id`: Unique identifier
+- `user_id`: Owner of the collection
+- `name`: Collection name
+- `description`: Optional description
+- `created_at`: Creation timestamp
+- `updated_at`: Last update timestamp
+
+### Deck
+Represents a constructed MTG deck.
+
+**Fields:**
+- `id`: Unique identifier
+- `user_id`: Owner of the deck
+- `name`: Deck name
+- `description`: Optional description
+- `format`: MTG format (Standard, Modern, etc.)
+- `created_at`: Creation timestamp
+- `updated_at`: Last update timestamp
+
+## API Endpoints
+
+### Cards
+- `GET /api/cards` - List all cards (paginated)
+- `POST /api/cards` - Create a new card
+- `GET /api/cards/{id}` - Get specific card
 - `PUT /api/cards/{id}` - Update card
 - `DELETE /api/cards/{id}` - Delete card (if no instances exist)
 
-### Card Instances Management  
-- `GET /api/card-instances` - List instances with filtering
-- `POST /api/card-instances` - Create new card instance
-- `GET /api/card-instances/{id}` - Get specific instance
-- `PUT /api/card-instances/{id}` - Update instance condition/foil
-- `DELETE /api/card-instances/{id}` - Delete instance
-- `PUT /api/card-instances/{cardInstanceId}/move-to-deck/{deckId}` - Move to deck
-- `PUT /api/card-instances/{id}/remove-from-deck` - Remove from deck
+**Query Parameters:**
+- `type`: Filter by card type
+- `page`: Page number for pagination
+- `per_page`: Items per page (default: 15)
 
-### Collections Management
-- `GET /api/collections` - List collections
-- `POST /api/collections` - Create new collection
+### Card Instances
+- `GET /api/card-instances` - List all card instances (paginated)
+- `POST /api/card-instances` - Create a new card instance
+- `GET /api/card-instances/{id}` - Get specific card instance
+- `PUT /api/card-instances/{id}` - Update card instance
+- `DELETE /api/card-instances/{id}` - Delete card instance
+- `PUT /api/card-instances/{id}/move-to-deck/{deckId}` - Move instance to deck
+- `PUT /api/card-instances/{id}/remove-from-deck` - Remove instance from deck
+
+**Query Parameters:**
+- `collection_id`: Filter by collection
+- `deck_id`: Filter by deck
+- `available`: Filter available instances (not in any deck)
+- `card_id`: Filter by card template
+- `condition`: Filter by condition
+- `foil`: Filter foil/non-foil cards
+
+### Collections
+- `GET /api/collections` - List all collections (paginated)
+- `POST /api/collections` - Create a new collection
 - `GET /api/collections/{id}` - Get specific collection
 - `PUT /api/collections/{id}` - Update collection
 - `DELETE /api/collections/{id}` - Delete collection (if empty)
-- `GET /api/collections/{id}/card-instances` - Get collection contents
+- `GET /api/collections/{id}/card-instances` - Get card instances in collection
 
-### Decks Management
-- `GET /api/decks` - List decks with format filtering
-- `POST /api/decks` - Create new deck
-- `GET /api/decks/{id}` - Get specific deck with card analysis
+### Decks
+- `GET /api/decks` - List all decks (paginated)
+- `POST /api/decks` - Create a new deck
+- `GET /api/decks/{id}` - Get specific deck
 - `PUT /api/decks/{id}` - Update deck
 - `DELETE /api/decks/{id}` - Delete deck
-- `GET /api/decks/{id}/card-instances` - Get deck contents
-- `POST /api/decks/{deckId}/add-card-instance/{cardInstanceId}` - Add card to deck
-- `DELETE /api/decks/{deckId}/remove-card-instance/{cardInstanceId}` - Remove card from deck
+- `GET /api/decks/{id}/card-instances` - Get card instances in deck
+- `POST /api/decks/{id}/add-card-instance/{instanceId}` - Add card instance to deck
+- `DELETE /api/decks/{id}/remove-card-instance/{instanceId}` - Remove card instance from deck
 
-## 🔧 Technical Implementation
+**Query Parameters:**
+- `format`: Filter by deck format
+- `page`: Page number for pagination
+- `per_page`: Items per page (default: 15)
 
-### Validation & Form Requests
-All endpoints use Laravel Form Request classes with comprehensive validation:
-- **StoreCardRequest** & **UpdateCardRequest**: MTG card validation
-- **StoreCollectionRequest** & **UpdateCollectionRequest**: Collection validation
-- **StoreDeckRequest** & **UpdateDeckRequest**: Deck format validation
-- **StoreCardInstanceRequest** & **UpdateCardInstanceRequest**: Condition validation
+## Import Functionality
 
-### API Resources
-Sophisticated response formatting with Laravel API Resources:
-- Conditional relationship loading
-- Computed properties and statistics
-- Consistent JSON structure
-- Pagination support
+The API supports importing card collections from external platforms. Currently supported:
 
-### OpenAPI Attributes Architecture
-- **Controller-level tags** for endpoint grouping
-- **Method-level documentation** for each endpoint
-- **Parameter documentation** with types and examples
-- **Request body schemas** with validation rules
-- **Response schemas** with proper HTTP status codes
-- **Schema references** for consistent data structures
+### Moxfield Import
 
-### Key Features
-- **Individual card tracking**: Each physical card tracked separately
-- **Smart deck management**: Prevents double-assignment, user isolation
-- **Flexible filtering**: Type, format, availability, collection, deck filters
-- **Comprehensive relationships**: Cards ↔ Instances ↔ Collections ↔ Decks ↔ Users
-- **Business rule enforcement**: Referential integrity protection
-- **Computed properties**: Statistics, availability, condition analysis
+Import your entire collection from a Moxfield CSV export.
 
-## 🧪 Testing
+#### Endpoint
+`POST /api/collections/{id}/import/moxfield`
 
-Comprehensive test suite with **49 tests** and **252 assertions**:
-- Unit tests for core functionality
-- Feature tests for all endpoints
-- Integration tests for complete workflows
-- Form request validation tests
-- Business rule and security tests
+#### Request
+- **Method**: POST
+- **Content-Type**: multipart/form-data
+- **Body**:
+  - `csv_file`: The Moxfield CSV export file (required)
+  - `create_missing_cards`: Whether to create new card records (optional, default: true)
 
-All tests pass with OpenAPI implementation.
-
-## 🛠️ Setup Instructions
-
-1. **Install dependencies**:
-   ```bash
-   composer install
-   npm install
-   ```
-
-2. **Configure environment**:
-   ```bash
-   cp .env.example .env
-   php artisan key:generate
-   ```
-
-3. **Setup database**:
-   ```bash
-   php artisan migrate
-   php artisan db:seed
-   ```
-
-4. **Generate API documentation**:
-   ```bash
-   php artisan l5-swagger:generate
-   ```
-
-5. **Start development server**:
-   ```bash
-   php artisan serve
-   ```
-
-6. **Access documentation**:
-   - API: `http://localhost:8000/api/documentation`
-   - JSON spec: `http://localhost:8000/docs`
-
-## 📚 Architecture
-
-### Data Model
-```
-Users (1) → (*) Collections (1) → (*) CardInstances (*) ← (1) Cards
-Users (1) → (*) Decks (1) → (*) CardInstances
-```
-
-### Response Format
+#### Response
 ```json
 {
-  "data": [...],           // Resource data
-  "meta": {               // Pagination metadata
+  "message": "Import completed successfully",
+  "stats": {
+    "processed": 150,
+    "cards_created": 75,
+    "cards_found": 75,
+    "instances_created": 150,
+    "errors": []
+  }
+}
+```
+
+#### CSV Format Expected
+The Moxfield CSV should contain these columns:
+- **Required**: Count, Name, Edition, Condition, Language, Foil, Collector Number
+- **Optional**: Tags, Purchase Price, Alter, Proxy, Tradelist Count, Last Modified
+
+#### How It Works
+1. **Card Deduplication**: Cards are identified by name + edition + collector number
+2. **Instance Creation**: Creates individual CardInstance records for each count
+3. **Condition Mapping**: Maps Moxfield conditions to internal format
+4. **Error Handling**: Continues processing even if some rows fail
+5. **Transaction Safety**: All changes are wrapped in a database transaction
+
+#### Supported Import Formats
+
+Get list of supported formats:
+`GET /api/import/formats`
+
+```json
+{
+  "formats": [
+    {
+      "name": "Moxfield",
+      "description": "Import from Moxfield CSV export",
+      "endpoint": "/api/collections/{id}/import/moxfield",
+      "required_columns": ["Count", "Name", "Edition", "Condition", "Language", "Foil", "Collector Number"],
+      "optional_columns": ["Tags", "Purchase Price", "Alter", "Proxy"],
+      "file_requirements": {
+        "format": "CSV",
+        "max_size": "10MB",
+        "encoding": "UTF-8"
+      }
+    }
+  ]
+}
+```
+
+## Error Handling
+
+The API uses standard HTTP status codes and provides detailed error messages:
+
+### Status Codes
+- `200`: Success
+- `201`: Created
+- `206`: Partial Content (import completed with some errors)
+- `400`: Bad Request
+- `404`: Not Found
+- `422`: Validation Error
+- `500`: Server Error
+
+### Error Response Format
+```json
+{
+  "message": "Error description",
+  "errors": {
+    "field_name": ["Specific error message"]
+  }
+}
+```
+
+### Business Rules
+- Cards cannot be deleted if they have existing instances
+- Collections cannot be deleted if they contain card instances
+- Card instances cannot be assigned to decks belonging to different users
+- Card instances cannot be assigned to multiple decks simultaneously
+
+## OpenAPI Documentation
+
+Interactive API documentation is available at:
+- **Swagger UI**: `http://localhost:8000/api/documentation`
+- **JSON Spec**: `http://localhost:8000/docs`
+
+The OpenAPI specification includes:
+- Complete endpoint documentation
+- Request/response schemas
+- Parameter descriptions
+- Example requests and responses
+- Error response formats
+
+### Resource Schemas
+All API responses use consistent resource formatting:
+- **CardResource**: Complete card data with relationships
+- **CardInstanceResource**: Individual card instance with computed properties
+- **CollectionResource**: Collection with statistics
+- **DeckResource**: Deck with card composition analysis
+- **UserResource**: User data with collection/deck summaries
+
+### Pagination
+List endpoints return paginated responses:
+```json
+{
+  "data": [...],
+  "meta": {
     "current_page": 1,
+    "last_page": 5,
+    "per_page": 15,
     "total": 67
   },
-  "links": {              // Pagination links
-    "first": "...",
-    "next": "..."
+  "links": {
+    "first": "https://api.example.com/cards?page=1",
+    "last": "https://api.example.com/cards?page=5",
+    "prev": null,
+    "next": "https://api.example.com/cards?page=2"
   }
 }
 ```
 
-### Error Format
-```json
-{
-  "message": "Validation failed",
-  "errors": {
-    "field": ["Error message"]
-  }
-}
-```
+## Example Workflow: Importing a Moxfield Collection
 
-This API provides a complete, documented, and tested solution for managing Magic: The Gathering card collections with professional-grade OpenAPI documentation. 
+1. **Export from Moxfield**: Go to your Moxfield collection and export as CSV
+2. **Create Collection**: `POST /api/collections` with name "My Moxfield Import"
+3. **Import CSV**: `POST /api/collections/{id}/import/moxfield` with the CSV file
+4. **Review Results**: Check the stats in the response for any errors
+5. **Organize Cards**: Use the API to move cards into decks as needed
+
+The import process will:
+- Create new Card records for unknown cards
+- Create CardInstance records for each physical card
+- Preserve all metadata (condition, foil status, tags, prices)
+- Handle duplicates intelligently
+- Provide detailed statistics on the import results
+
+This makes it easy to migrate your existing collection data while maintaining full compatibility with the What Deck API structure. 

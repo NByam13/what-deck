@@ -20,6 +20,8 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: 'subtype', type: 'string', nullable: true, example: 'Spell'),
         new OA\Property(property: 'power', type: 'integer', nullable: true, example: null),
         new OA\Property(property: 'toughness', type: 'integer', nullable: true, example: null),
+        new OA\Property(property: 'edition', type: 'string', nullable: true, example: 'dft'),
+        new OA\Property(property: 'collector_number', type: 'string', nullable: true, example: '187'),
         new OA\Property(property: 'created_at', type: 'string', format: 'date-time', example: '2024-01-01T12:00:00.000000Z'),
         new OA\Property(property: 'updated_at', type: 'string', format: 'date-time', example: '2024-01-01T12:00:00.000000Z'),
         new OA\Property(
@@ -65,6 +67,8 @@ class CardResource extends JsonResource
             'subtype' => $this->subtype,
             'power' => $this->power,
             'toughness' => $this->toughness,
+            'edition' => $this->edition,
+            'collector_number' => $this->collector_number,
             'created_at' => $this->created_at?->toISOString(),
             'updated_at' => $this->updated_at?->toISOString(),
 

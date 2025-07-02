@@ -15,7 +15,7 @@ use OpenApi\Attributes as OA;
 class CollectionController extends Controller
 {
     #[OA\Get(
-        path: '/api/collections',
+        path: '/collections',
         description: 'Get a paginated list of card collections',
         summary: 'List all collections',
         tags: ['Collections'],
@@ -58,7 +58,7 @@ class CollectionController extends Controller
     }
 
     #[OA\Post(
-        path: '/api/collections',
+        path: '/collections',
         summary: 'Create a new collection',
         description: 'Create a new card collection',
         tags: ['Collections'],
@@ -89,7 +89,7 @@ class CollectionController extends Controller
     }
 
     #[OA\Get(
-        path: '/api/collections/{id}',
+        path: '/collections/{id}',
         summary: 'Get a specific collection',
         description: 'Retrieve a specific collection with its relationships',
         tags: ['Collections'],
@@ -109,7 +109,7 @@ class CollectionController extends Controller
     }
 
     #[OA\Put(
-        path: '/api/collections/{id}',
+        path: '/collections/{id}',
         summary: 'Update a collection',
         description: 'Update an existing collection',
         tags: ['Collections'],
@@ -139,7 +139,7 @@ class CollectionController extends Controller
     }
 
     #[OA\Delete(
-        path: '/api/collections/{id}',
+        path: '/collections/{id}',
         summary: 'Delete a collection',
         description: 'Delete a collection (only if no card instances exist)',
         tags: ['Collections'],
@@ -172,7 +172,7 @@ class CollectionController extends Controller
     }
 
     #[OA\Get(
-        path: '/api/collections/{id}/card-instances',
+        path: '/collections/{id}/card-instances',
         summary: 'Get collection card instances',
         description: 'Get all card instances in a specific collection',
         tags: ['Collections'],

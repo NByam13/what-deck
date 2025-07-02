@@ -43,6 +43,8 @@ class CardFactory extends Factory
             'subtype' => $subtype,
             'power' => $type === 'Creature' ? $this->faker->numberBetween(0, 10) : null,
             'toughness' => $type === 'Creature' ? $this->faker->numberBetween(1, 10) : null,
+            'edition' => $this->faker->randomElement(['dft', 'pths', 'blc', 'inr', 'afr', 'znr', 'mid', 'vow']),
+            'collector_number' => $this->faker->numberBetween(1, 300) . $this->faker->optional(0.1)->randomElement(['★', '†']),
         ];
     }
 

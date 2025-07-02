@@ -7,6 +7,7 @@ use App\Http\Controllers\CardInstanceController;
 use App\Http\Controllers\CollectionController;
 use App\Http\Controllers\DeckController;
 use App\Http\Controllers\ImportController;
+use App\Http\Controllers\ScryfallImportController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -32,4 +33,12 @@ Route::delete('decks/{deck}/remove-card-instance/{cardInstance}', [DeckControlle
 
 // Import routes
 Route::get('import/formats', [ImportController::class, 'supportedFormats']);
-Route::post('collections/{collection}/import/moxfield', [ImportController::class, 'moxfield']); 
+Route::post('collections/{collection}/import/moxfield', [ImportController::class, 'moxfield']);
+
+// Scryfall import
+Route::prefix('/scryfall')->group(function () {
+    Route::post('/import', [ScryfallImportController::class, 'import']);
+    Route::post('/import/auto', [ScryfallImportController::class, 'autoImport']);
+    Route::get('/bulk-data', [ScryfallImportController::class, 'getBulkData']);
+    Route::get('/stats', [ScryfallImportController::class, 'getStats']);
+}); 

@@ -56,8 +56,7 @@ class Card extends Model
     ];
 
     protected $casts = [
-        'power' => 'integer',
-        'toughness' => 'integer',
+        // Note: power/toughness stored as strings to handle "*", "X", "1+*", etc.
         
         // JSON fields
         'multiverse_ids' => 'array',

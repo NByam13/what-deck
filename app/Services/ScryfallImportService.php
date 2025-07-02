@@ -225,8 +225,8 @@ class ScryfallImportService
             'cost' => $manaCost,
             'type' => $this->parseMainType($typeLine),
             'subtype' => $this->parseSubtype($typeLine),
-            'power' => is_numeric($power) ? (int) $power : null,
-            'toughness' => is_numeric($toughness) ? (int) $toughness : null,
+            'power' => $power, // Store as string to handle "*", "X", etc.
+            'toughness' => $toughness, // Store as string to handle "*", "X", etc.
             'edition' => $data['set_name'] ?? null,
             'collector_number' => $data['collector_number'] ?? null,
 
@@ -248,12 +248,12 @@ class ScryfallImportService
             'flavor_text' => $flavorText,
             'type_line' => $typeLine,
 
-            // Colors and Identity
-            'colors' => $data['colors'] ?? null,
-            'color_identity' => $data['color_identity'] ?? null,
-            'color_indicator' => $data['color_indicator'] ?? null,
-            'keywords' => $data['keywords'] ?? null,
-            'produced_mana' => $data['produced_mana'] ?? null,
+            // Colors and Identity (ensure arrays are handled properly)
+            'colors' => !empty($data['colors']) ? $data['colors'] : null,
+            'color_identity' => !empty($data['color_identity']) ? $data['color_identity'] : null,
+            'color_indicator' => !empty($data['color_indicator']) ? $data['color_indicator'] : null,
+            'keywords' => !empty($data['keywords']) ? $data['keywords'] : null,
+            'produced_mana' => !empty($data['produced_mana']) ? $data['produced_mana'] : null,
 
             // Stats and Attributes
             'loyalty' => $data['loyalty'] ?? null,
@@ -306,13 +306,13 @@ class ScryfallImportService
             'story_spotlight' => $data['story_spotlight'] ?? false,
             'game_changer' => $data['game_changer'] ?? false,
 
-            // Additional Data
-            'finishes' => $data['finishes'] ?? null,
-            'games' => $data['games'] ?? null,
-            'promo_types' => $data['promo_types'] ?? null,
-            'prices' => $data['prices'] ?? null,
-            'purchase_uris' => $data['purchase_uris'] ?? null,
-            'related_uris' => $data['related_uris'] ?? null,
+            // Additional Data (ensure arrays/objects are handled properly)
+            'finishes' => !empty($data['finishes']) ? $data['finishes'] : null,
+            'games' => !empty($data['games']) ? $data['games'] : null,
+            'promo_types' => !empty($data['promo_types']) ? $data['promo_types'] : null,
+            'prices' => !empty($data['prices']) ? $data['prices'] : null,
+            'purchase_uris' => !empty($data['purchase_uris']) ? $data['purchase_uris'] : null,
+            'related_uris' => !empty($data['related_uris']) ? $data['related_uris'] : null,
             'variation_of' => $data['variation_of'] ?? null,
             'card_back_id' => $data['card_back_id'] ?? null,
 
@@ -330,19 +330,66 @@ class ScryfallImportService
     protected function processBatch(array $batch): void
     {
         foreach ($batch as $cardData) {
-            // Check if card already exists (by scryfall_id)
-            $existingCard = Card::where('scryfall_id', $cardData['scryfall_id'])->first();
-            
-            if ($existingCard) {
-                // Update existing card
-                $existingCard->update($cardData);
-                $this->updated++;
-            } else {
-                // Create new card
-                Card::create($cardData);
-                $this->created++;
+            try {
+                // Clean up the data to ensure proper JSON handling
+                $cleanData = $this->cleanDataForDatabase($cardData);
+                
+                // Check if card already exists (by scryfall_id)
+                $existingCard = Card::where('scryfall_id', $cleanData['scryfall_id'])->first();
+                
+                if ($existingCard) {
+                    // Update existing card
+                    $existingCard->update($cleanData);
+                    $this->updated++;
+                } else {
+                    // Create new card
+                    Card::create($cleanData);
+                    $this->created++;
+                }
+            } catch (Exception $e) {
+                $this->errors++;
+                $this->errorLog[] = [
+                    'scryfall_id' => $cardData['scryfall_id'] ?? 'unknown',
+                    'card_name' => $cardData['title'] ?? 'unknown',
+                    'error' => $e->getMessage()
+                ];
+                
+                Log::warning('Error processing card in batch', [
+                    'scryfall_id' => $cardData['scryfall_id'] ?? 'unknown',
+                    'error' => $e->getMessage()
+                ]);
             }
         }
+    }
+
+    /**
+     * Clean data for database insertion - ensure arrays/objects are properly handled
+     */
+    protected function cleanDataForDatabase(array $data): array
+    {
+        // List of fields that should be JSON arrays/objects
+        $jsonFields = [
+            'multiverse_ids', 'colors', 'color_identity', 'color_indicator', 
+            'keywords', 'produced_mana', 'legalities', 'image_uris', 'artist_ids',
+            'finishes', 'games', 'promo_types', 'prices', 'purchase_uris', 'related_uris'
+        ];
+        
+        $cleanData = $data;
+        
+        foreach ($jsonFields as $field) {
+            if (isset($cleanData[$field])) {
+                // If it's an empty array, set to null
+                if (is_array($cleanData[$field]) && empty($cleanData[$field])) {
+                    $cleanData[$field] = null;
+                }
+                // If it's not an array but should be, handle appropriately
+                elseif ($cleanData[$field] === '' || $cleanData[$field] === []) {
+                    $cleanData[$field] = null;
+                }
+            }
+        }
+        
+        return $cleanData;
     }
 
     /**
